@@ -88,43 +88,51 @@ def shortest_path(source, target):
     """
     Returns the shortest list of (movie_id, person_id) pairs
     that connect the source to the target.
-
     If no possible path, returns None.
     """
 
-     # This will initialize frontier to just the initial state
-    start = Node(source, None, None)
+     # Use Queue and initialise
+    start = Node(state=source, parent=None, action=None)
     frontier = QueueFrontier()
     frontier.add(start)
 
-    # Initialize an empty set of explored states
+    # Create a set of explored states and initialise the empty set
     explored = set()
 
-    # Loop until a solution is found
+    # Now loop until the number of degrees is found
     while True:
 
-        # If the frontier is empty, there is no solution
+        # This is a check to see if the frontier is empty - if so stop because there is no solution
         if frontier.empty():
             return None
 
-        # Remove a node from the frontier ("first in, first out")
+        # Data is stored in a node containing state, parent node, action, cost.  Queue approach so First In, First Out.  Remove a node from the frontier
         node = frontier.remove()
 
-        # Find neighboring nodes
-        for movie, actor in neighbors_for_person(node.state):
-            if not frontier.contains_state(actor) and actor not in explored:
-                if actor == target:  # If neighboring node is the goal, return the solution
-                    solution = [(movie, actor)]
+        # neighbors_for_person function accepts a person’s id as input, and returns a set of 
+        # (movie_id, person_id) pairs for all people who starred in a movie with a given person.
+        # Look at neighbouring nodes to see if goal reached - otherwise add to frontier and move on
+        #
+        for movie, actress in neighbors_for_person(node.state):
+          
+            if not frontier.contains_state(actress) and actress not in explored:
+                if actress == target:  
+         # If the actress is in the results, then find the movie and work out solution (shortest path)
+                    solution = [(movie, actress)]
                     while node.parent is not None:
                         solution.append((node.action, node.state))
                         node = node.parent
                     solution.reverse()
                     return solution
-                else:  # Else add neighboring node to the frontier
-                    explored.add(actor)
-                    frontier.add(Node(actor, node, movie))
+                  
+                else: 
+           # Else add actress to the explored set and add the neighbouring actress, node, movie to the frontier
+                    explored.add(actress)
+                    frontier.add(Node(actress, node, movie))
 
-
+    """
+    End of shortest path code
+    """
 
 def person_id_for_name(name):
     """
