@@ -92,7 +92,7 @@ def shortest_path(source, target):
     """
 
      # Use Queue and initialise
-    start = Node(source, None, None)
+    start = Node(state=source, parent=None, action=None)
     frontier = QueueFrontier()
     frontier.add(start)
 
